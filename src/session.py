@@ -3,8 +3,8 @@ import requests
 
 
 class Session:
-	def __init__(self, url):
-		self.session = requests.Session()
+	def __init__(self, url, session=None):
+		self.session = requests.Session() if session is None else session
 		self.url = url
 
 	def safe_get(self, uri):
@@ -24,14 +24,15 @@ class UTRSession(Session):
 	api_version='v1'
 	def __init__(self):
 		super().__init__('https://api.universaltennis.com')
-		self.app_session = Session('https://app.universaltennis.com/api')
+		self.app_session = Session('https://app.universaltennis.com/api', session=self.session)
 
 	def login(self, username, password):
 		uri = f'/{self.api_version}/auth/login'
 		headers = {'Content-Type': 'application/json'}
 		body = {'email' : username, 'password' : password}
-		self.app_session.safe_post(uri, headers, body)
+		data = self.app_session.safe_post(uri, headers, body)
 		log.debug(f'Successful login for {username}')
+		self.id = data['claimedPlayer']['playerId']
 		return self
 
 	def find_id(self, name):
@@ -44,9 +45,9 @@ class UTRSession(Session):
 
 		return data['hits'][0]['id']
 
-	def get_player_data(self, id, name=None):
+	def get_player_data(self, id=None, name=None):
 		if not id and not name:
-			raise Exception("Must specify either a player name or id")
+			id = self.id
 		elif not id:
 			id = self.find_id(name)
 
