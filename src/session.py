@@ -13,8 +13,8 @@ class Session:
 				raise response.raise_for_status()
 			return response.json()
 
-	def safe_post(self, url, uri, headers=None, body=None):
-		with self.session.post(url + uri, headers=headers, json=body) as response:
+	def safe_post(self, uri, headers=None, body=None):
+		with self.session.post(self.url + uri, headers=headers, json=body) as response:
 			if (not response.ok):
 				raise response.raise_for_status()
 			return response.json()
@@ -24,13 +24,13 @@ class UTRSession(Session):
 	api_version='v1'
 	def __init__(self):
 		super().__init__('https://api.universaltennis.com')
-		self.app_url = 'https://app.universaltennis.com/api'
+		self.app_session = Session('https://app.universaltennis.com/api')
 
 	def login(self, username, password):
 		uri = f'/{self.api_version}/auth/login'
 		headers = {'Content-Type': 'application/json'}
 		body = {'email' : username, 'password' : password}
-		self.safe_post(self.app_url, uri, headers, body)
+		self.app_session.safe_post(uri, headers, body)
 		log.debug(f'Successful login for {username}')
 		return self
 
@@ -43,11 +43,6 @@ class UTRSession(Session):
 			log.warning(f"{data['total']} players found with the same name")
 
 		return data['hits'][0]['id']
-
-	def get_profile_data(self, id):
-		data = self.safe_get(f'/v1/player/{id}/profile')
-		log.debug(f'Profile data: {data}')
-		return data
 
 	def get_player_data(self, id, name=None):
 		if not id and not name:
