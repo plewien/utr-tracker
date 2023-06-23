@@ -11,8 +11,9 @@ class UTRArgs:
 		parser = argparse.ArgumentParser(description='Fetch and save the UTR ranking for a given player.')
 		parser.add_argument('--username', type=str, default=os.getenv('UTR_USERNAME'), help='Player email/username')
 		parser.add_argument('--password', type=str, default=os.getenv('UTR_PASSWORD'), help='Player password (will not save)')
-		parser.add_argument('--output', type=str, default='utr_results.csv', help='Filename to append results (default: utr_results.csv)')
-		parser.add_argument('-v', '--verbose', action="store_true", help='Verbose output')
+		parser.add_argument('--database', type=str, default='utr_results.csv', help='Path where UTR data is stored (default: utr_results.csv)')
+		parser.add_argument('--graph', action='store_true', help='Display UTR data from database on a graph')
+		parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
 
 		# Optionally, select a different player other than the one logged in
 		group = parser.add_mutually_exclusive_group()
