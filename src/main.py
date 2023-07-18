@@ -6,7 +6,7 @@ from session import UTRSession
 if __name__ == '__main__':
 	args = UTRArgs().parse()
 
-	if args.id or args.name:
+	if args.save:
 		from filesystem import append_utr_data
 		session = UTRSession().login(args.username, args.password)
 		data = session.get_player_data(args.id, args.name)

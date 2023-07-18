@@ -13,6 +13,7 @@ class UTRArgs:
 		parser.add_argument('--password', type=str, default=os.getenv('UTR_PASSWORD'), help='Player password (will not save)')
 		parser.add_argument('--database', type=str, default='utr_results.csv', help='Path where UTR data is stored (default: utr_results.csv)')
 		parser.add_argument('--graph', action='store_true', help='Display UTR data from database on a graph')
+		parser.add_argument('--save', action='store_true', help='Save UTR data to database')
 		parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
 
 		# Optionally, select a different player other than the one logged in
